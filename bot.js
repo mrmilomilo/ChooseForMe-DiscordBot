@@ -138,7 +138,7 @@ client.on("message", msg => {
 
           SaveItemsToStorage(StorageKey, ItemsToChooseFrom);
 
-          msg.reply(item + 'removed from the __list__ :neutral_face: ');
+          msg.reply(item + ' removed from the __list__ :neutral_face: ');
         }
       
       break;
