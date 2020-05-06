@@ -1,0 +1,15 @@
+[Unit]
+Description=Choose For Me
+
+[Service]
+ExecStart=/usr/bin/node <BOT_FOLDER_PATH>/bot.js
+Restart=always
+User=nobody
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=<BOT_FOLDER_PATH>
+
+[Install]
+WantedBy=multi-user.target
