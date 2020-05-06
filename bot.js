@@ -14,23 +14,28 @@ client.on("ready", () => {
 
 
 client.on("message", msg => {
-  const mentionedUsers = msg.mentions.users;
   
+  if(msg.author.bot) return;
+
   //@ChooseForMe cmd arg1  
+  const mentionedUsers = msg.mentions.users;
   if( !mentionedUsers.first() || !mentionedUsers.first().username  ) return;
 
+  console.log('\n');
+  console.log("[" + new Date().toISOString() + "]" + msg.content);
 
   const args = msg.content.split(/ +/);
-  const cmd = args[1];
+  const cmd = args[1] ? args[1].toLowerCase() : "choose";
+  const arg1 = args[2];
 
   console.log('cmd: ' + cmd);
-  console.log('args: ' + args);
+  // console.log('args: ' + args);
 
   switch(cmd) {
     case "add":
       
-      if(args[2]) {
-        const item = args[2];
+      if(arg1) {
+        const item = arg1;
 
         ItemsToChooseFrom.push(item);
         
@@ -48,8 +53,8 @@ client.on("message", msg => {
       break;
     case "remove":
 
-        if(args[2]) {
-          const item = args[2];
+        if(arg1) {
+          const item = arg1;
 
           ItemsToChooseFrom = ItemsToChooseFrom.filter( i => i!==item);
 
@@ -58,6 +63,8 @@ client.on("message", msg => {
       
       break;
     case "pick":
+    case "choose":
+    case "chooseforme":
 
       const picked = ItemsToChooseFrom[Math.floor(Math.random() * ItemsToChooseFrom.length)];
       
