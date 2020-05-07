@@ -1,15 +1,21 @@
 # ChooseForMe-DiscordBot
  A discord bot choosing a game to play from a given list. For indecisive friends!
 
-## Startup
+## Prerequisites
+NodeJs can be installed with:
 ```
 sudo apt-get install node
+```
+
+## Startup
+In the directory of the repo:
+```
 npm install
 npm start
 ```
 
 ## Run at startup (Linux)
-1. Edit chooseforme-discordbot.service (instructions are into the file)
+1. Edit chooseforme-discordbot.service (more instructions inside)
 2. Run in a terminal:
 ```
 sudo cp chooseforme-discordbot.service /etc/systemd/system/chooseforme-discordbot.service
