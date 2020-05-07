@@ -5,7 +5,7 @@
 ```
 sudo apt-get install node
 npm install
-node bot.js
+npm start
 ```
 
 ## Run at startup (Linux)
