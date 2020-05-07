@@ -2,39 +2,24 @@ require("dotenv").config();
 
 const Discord = require("discord.js")
 const storage = require('node-persist');
+const fs = require('fs');
 
 const client = new Discord.Client();
+const Embeds = require('./cmds/embeds.js');
+
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./cmds').filter(file => file.endsWith('.js'));
+
+for(const file of commandFiles) {
+  const command = require(`./cmds/${file}`);
+  client.commands.set(command.name, command);
+}
+
+
 const botname = 'ChooseForMe';
 var ItemsToChooseFrom = [];
 const StorageKey = 'itemsToChooseFrom';
 
-
-var helpEmbed = new Discord.MessageEmbed()
-.setColor('#0099ff')
-.setTitle('ChooseForMe')
-.setDescription('**Selects a random element from a __list__ for you, so you don\'t have to decide!** (Good to choose a game to play with friends in a non democratic way:smirk: )')
-.setThumbnail('https://i.imgur.com/hUoBidH.png')
-.addFields(
-    { name: `@${botname} [no arguments]`, value: 'Chooses for you an element from the __list__.'},
-    { name: `@${botname} list`, value: 'Display all elements in the __list__. (One of these is going to be selected randomly).' },
-    { name: `@${botname} add *item*`, value: 'Add *item* to the __list__.' },
-    { name: `@${botname} remove *item*`, value: 'Remove *item* from the __list__.' },
-    { name: `@${botname} clearlist`, value: 'Self-explanatory. Not reversible.' },
-    { name: `@${botname} help`, value: 'Prints this message' },
-  )
-.setTimestamp();
-
-const listEmbedTemplate = new Discord.MessageEmbed()
-.setColor('#0099ff')
-.setTitle('ChooseForMe')
-.setThumbnail('https://i.imgur.com/hUoBidH.png')
-.setTimestamp();
-
-const listPickedEmbedTemplate = new Discord.MessageEmbed()
-.setColor('#0099ff')
-.setTitle('ChooseForMe')
-.setThumbnail('https://i.imgur.com/hUoBidH.png')
-.setTimestamp();
 
 
 
@@ -76,7 +61,7 @@ client.on("message", msg => {
     case 'help':
         console.log('Help cmd received.');
 
-        msg.channel.send(helpEmbed);
+        msg.channel.send(Embeds.GetHelpEmbed(botname));
 
       break;
     case "add":
@@ -105,21 +90,9 @@ client.on("message", msg => {
 
       break;
     case "list":
-
-        console.log("Items to choose from: " + ItemsToChooseFrom);
-
-        let listEmbed = listEmbedTemplate;
-        let numberedListPrefix = 'Items in the __list__ :smiley: \n';
-        let numberedList = '';
         
-        ItemsToChooseFrom.forEach( (elem,index) => {
-          numberedList += '\t\t•  ' + elem + '\n';
-        });
+        client.commands.get('list').execute(msg, ItemsToChooseFrom);
 
-        listEmbed.setDescription(numberedList ? (numberedListPrefix+numberedList) : 'No items in the list!:confused: ');
-
-        msg.channel.send(listEmbed);
-        
       break;
     case "remove":
 
@@ -152,7 +125,7 @@ client.on("message", msg => {
 
       let pickedElemText = 'I have choosen: **' + picked + '**';
 
-      msg.channel.send(listPickedEmbedTemplate.setDescription(pickedElemText));
+      msg.channel.send(Embeds.GetBasicEmbed().setDescription(pickedElemText));
 
       break;
     case "clearlist":
