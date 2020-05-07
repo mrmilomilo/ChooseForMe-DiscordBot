@@ -14,7 +14,7 @@ npm install
 npm start
 ```
 
-## Run at startup (Linux)
+## Automatically run at startup (Linux)
 1. Edit chooseforme-discordbot.service (more instructions inside)
 2. Run in a terminal:
 ```
