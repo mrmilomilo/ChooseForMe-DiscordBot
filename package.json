@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"prova\"",
     "start": "node bot.js",
     "dev": "nodemon bot.js"
   },
