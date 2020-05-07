@@ -4,17 +4,16 @@ const Embeds = require('./embeds.js');
 module.exports = {
 
     name: 'list',
-    description: 'listdesc',
     
-    execute(msg, ItemsToChooseFrom) {
+    execute(msg, Items) {
 
-        console.log("Items to choose from: " + ItemsToChooseFrom);
+        console.log("Items to choose from: " + Items.ItemsToChooseFrom);
 
         let listEmbed = Embeds.GetBasicEmbed();
         let numberedListPrefix = 'Items in the __list__ :smiley: \n';
         let numberedList = '';
         
-        ItemsToChooseFrom.forEach( (elem,index) => {
+        Items.ItemsToChooseFrom.forEach( (elem,index) => {
           numberedList += '\t\t•  ' + elem + '\n';
         });
 
