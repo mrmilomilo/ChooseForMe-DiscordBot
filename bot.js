@@ -43,11 +43,14 @@ client.on("message", msg => {
   //syntax: @ChooseForMe cmd arg1  
   const mentionedUsers = msg.mentions.users;
   if( !mentionedUsers.first() || !mentionedUsers.first().username  ) return;
+  if( mentionedUsers.first().username != "ChooseForMe" ) return;
+
 
   console.log('\n');
   console.log("[" + new Date().toISOString() + "]", msg.content);
-
+  console.log(msg.content);
   const args = msg.content.split(/ +/);
+
   const cmd = args[1] ? args[1].toLowerCase() : "choose";
   const arg1 = args[2];
 
@@ -115,4 +118,6 @@ client.login(process.env.BOT_TOKEN);
   Persist.LoadItemsFromStorage(StorageKey, Items);
 
 })();
+
+
 
