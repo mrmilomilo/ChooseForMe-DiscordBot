@@ -7,11 +7,18 @@ NodeJs can be installed with:
 sudo apt-get install node
 ```
 
-## Startup
+## Startup (manual)
 In the directory of the repo:
 ```
 npm install
 npm start
+```
+
+## Discord Token
+The discord token is read from an environment variable named DISCORD_TOKEN.
+You can crete a '.env' file in the bot's directory and put your key like this:
+```
+DISCORD_TOKEN=YOURKEYHERE
 ```
 
 ## Automatically run at startup (Linux)
