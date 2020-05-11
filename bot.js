@@ -1,15 +1,16 @@
 require("dotenv").config();
 
 const Discord = require("discord.js");
-const Persist = require('./helpers/persist.js');
+const Persist = require("./helpers/persist.js");
 
 const client = new Discord.Client();
-const Embeds = require('./cmds/embeds.js');
+const Embeds = require("./cmds/embeds.js");
+
 
 //load commands .js files
 client.commands = new Discord.Collection();
-const fs = require('fs');
-const commandFiles = fs.readdirSync('./cmds').filter(file => file.endsWith('.js'));
+const fs = require("fs");
+const commandFiles = fs.readdirSync("./cmds").filter(file => file.endsWith(".js"));
 
 for(const file of commandFiles) {
   const command = require(`./cmds/${file}`);
@@ -17,20 +18,18 @@ for(const file of commandFiles) {
 }
 
 
-const botname = 'ChooseForMe';
-// const StorageKey = 'itemsToChooseFrom';
+//Items.ServerItemsMap.get(DiscordServerId) is an array 
+//containing the list of elem. to choose from for that server
 var Items = {
-  ServerItemsMap : new Map(),
-  // ItemsToChooseFrom : []
+  ServerItemsMap : new Map()
 };
+const botname = "ChooseForMe";
 
 
 
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
-
-  
 
   client.guilds.cache.forEach(g => {
     
@@ -39,49 +38,48 @@ client.on("ready", () => {
     }
 
   });
-  
 
 });
 
 
+
 client.on("message", msg => {
   
-
+  //discard any mex from other bots
   if(msg.author.bot) return;
 
   //someone is trying to write chooseforme without the  @ to mention
-  if(msg.content.toLowerCase().includes('chooseforme')) {
-      console.log('Wrote chooseforme without mention.')
-      msg.reply('All chooseforme bot commands starts with a mention! Try @ChooseForMe help');
+  if(msg.content.toLowerCase().includes(botname.toLowerCase())) {
+      console.log("Wrote chooseforme without mention.")
+      msg.reply("All chooseforme bot commands starts with a mention! Try @ChooseForMe help");
+
       return;
   }
 
-  //guild id is used
-  if(!msg.guild.id) {
-    console.log('ERROR: Guild id undergined!');
-    return;
-  }
-
-  //syntax: @ChooseForMe cmd arg1  
+  //bot accepts only cmds strating with a mention: @ChooseForMe cmd arg1  
   const mentionedUsers = msg.mentions.users;
   if( !mentionedUsers.first() || !mentionedUsers.first().username  ) return;
-  if( mentionedUsers.first().username != "ChooseForMe" ) return;
+  if( mentionedUsers.first().username != botname ) return;
 
+  
+  //guild id identifies univocally the discord server (used to read/write persistent data)
+  if(!msg.guild.id) {
+    console.log("ERROR: Guild id undefined!");
+    return;
+  }
+  
   //use server id as storage key
-  const curStorageKey = msg.guild.id;    
-  // Persist.LoadItemsFromStorage(curStorageKey, Items);
+  const curStorageKey = msg.guild.id; 
 
 
-  console.log('\n');
-  console.log("[" + new Date().toISOString() + "]", msg.content);
-  console.log(msg.content);
+  console.log("\n[" + new Date().toISOString() + "]", msg.content);
+
   const args = msg.content.split(/ +/);
-
-  const cmd = args[1] ? args[1].toLowerCase() : "choose";
+  const cmd = args[1] ? args[1].toLowerCase() : "choose";   //no arguments defaults to "choose" option
   const arg1 = args[2];
 
   console.log('cmd: ' + cmd);
-  // console.log('args: ' + args);
+
 
   switch(cmd) {
     case 'help':
@@ -104,9 +102,7 @@ client.on("message", msg => {
         client.commands.get('remove').execute( msg, arg1, Items, curStorageKey);
 
       break;
-    case "pick":
     case "choose":
-    case "chooseforme":
 
       client.commands.get('choose').execute(msg, Items, curStorageKey);
 
@@ -117,8 +113,8 @@ client.on("message", msg => {
 
       break;
     case "_printstorage":
-      //for debug.
-        Persist.PrintStorage();
+      //for debug. 
+      //Persist.PrintStorage();
 
       break;
     default:
@@ -139,11 +135,8 @@ client.login(process.env.BOT_TOKEN);
 
 (async () => {
   
+  //init node-persist
   await Persist.Init();
-
-  // Persist.LoadItemsFromStorage(StorageKey, Items);
-  
-
 
 })();
 

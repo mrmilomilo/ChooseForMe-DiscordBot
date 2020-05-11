@@ -5,10 +5,10 @@ module.exports = {
 
     name: 'remove',
     
-    execute(msg, arg1, Items, StorageKey) {
+    execute(msg, ItemToRemove, Items, StorageKey) {
 
-        if(arg1) {
-            const item = arg1;
+        if(ItemToRemove) {
+            const item = ItemToRemove;
   
             if(!Items.ServerItemsMap.get(StorageKey).includes(item)) {
               console.log('Item to removed does not exist in list');
