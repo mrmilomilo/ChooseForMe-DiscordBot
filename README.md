@@ -21,7 +21,7 @@ You can crete a '.env' file in the bot's directory and put your key like this:
 DISCORD_TOKEN=YOURKEYHERE
 ```
 
-## Automatically run at startup (Linux)
+## Automatically run at startup on your server(Linux)
 1. Edit chooseforme-discordbot.service (more instructions inside)
 2. Run in a terminal:
 ```
