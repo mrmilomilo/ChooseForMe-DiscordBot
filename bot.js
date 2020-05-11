@@ -18,19 +18,35 @@ for(const file of commandFiles) {
 
 
 const botname = 'ChooseForMe';
-const StorageKey = 'itemsToChooseFrom';     //todo: nomeserver.nomecanale dovrebbe essere abbastanza univoco da rendere questo bot multiserver
-var Items = {ItemsToChooseFrom : []};
+// const StorageKey = 'itemsToChooseFrom';
+var Items = {
+  ServerItemsMap : new Map(),
+  // ItemsToChooseFrom : []
+};
 
 
 
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
+
+  
+
+  client.guilds.cache.forEach(g => {
+    
+    if( !Items.ServerItemsMap.get(g.id) ) {
+      Persist.LoadItemsFromStorage(g.id, Items);
+    }
+
+  });
+  
+
 });
 
 
 client.on("message", msg => {
   
+
   if(msg.author.bot) return;
 
   //someone is trying to write chooseforme without the  @ to mention
@@ -40,10 +56,20 @@ client.on("message", msg => {
       return;
   }
 
+  //guild id is used
+  if(!msg.guild.id) {
+    console.log('ERROR: Guild id undergined!');
+    return;
+  }
+
   //syntax: @ChooseForMe cmd arg1  
   const mentionedUsers = msg.mentions.users;
   if( !mentionedUsers.first() || !mentionedUsers.first().username  ) return;
   if( mentionedUsers.first().username != "ChooseForMe" ) return;
+
+  //use server id as storage key
+  const curStorageKey = msg.guild.id;    
+  // Persist.LoadItemsFromStorage(curStorageKey, Items);
 
 
   console.log('\n');
@@ -65,34 +91,34 @@ client.on("message", msg => {
       break;
     case "add":        
 
-        client.commands.get('add').execute(msg, arg1, Items, StorageKey);
+        client.commands.get('add').execute(msg, arg1, Items, curStorageKey);
 
       break;
     case "list":
 
-        client.commands.get('list').execute(msg, Items);
+        client.commands.get('list').execute(msg, Items, curStorageKey);
 
       break;
     case "remove":
 
-        client.commands.get('remove').execute( msg, arg1, Items, StorageKey);
+        client.commands.get('remove').execute( msg, arg1, Items, curStorageKey);
 
       break;
     case "pick":
     case "choose":
     case "chooseforme":
 
-      client.commands.get('choose').execute(msg, Items);
+      client.commands.get('choose').execute(msg, Items, curStorageKey);
 
       break;
     case "clearlist":
 
-        client.commands.get('clearlist').execute(msg, Items);
+        client.commands.get('clearlist').execute(msg, curStorageKey, Items);
 
       break;
     case "_printstorage":
       //for debug.
-        PrintStorage();
+        Persist.PrintStorage();
 
       break;
     default:
@@ -115,7 +141,9 @@ client.login(process.env.BOT_TOKEN);
   
   await Persist.Init();
 
-  Persist.LoadItemsFromStorage(StorageKey, Items);
+  // Persist.LoadItemsFromStorage(StorageKey, Items);
+  
+
 
 })();
 

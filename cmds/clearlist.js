@@ -4,9 +4,9 @@ module.exports = {
 
     name: 'clearlist',
     
-    execute(msg, Items) {
+    execute(msg, StorageKey, Items) {
 
-        Persist.WipeStorage(Items);  
+        Persist.WipeStorage(StorageKey, Items);  
         msg.reply('__list__ cleared! :scream: :scream: :scream: ');
 
     }

@@ -9,31 +9,46 @@ const storage = require('node-persist');
 
   }
 
-  async function SaveItemsToStorage(key, value) {
-    let values = await storage.setItem(key, value);
+  async function SaveItemsToStorage(key, Items) {
+
+    // let values = await storage.setItem(key, value);
+
+    let values = await storage.setItem(key, Items.ServerItemsMap.get(key));
     
     console.log('saving ', key, values);
   }
   
   
-  async function LoadItemsFromStorage(key, Items) {
+  async function LoadItemsFromStorage(key, ItemsObj) {
   
     let savedValues = await storage.getItem(key);
    
     console.log('read from storage: ', savedValues);
   
-    if(savedValues) {
-      savedValues.forEach(e => Items.ItemsToChooseFrom.push(e));
+    let valuesArray = [];
+    if(savedValues && Object.keys(savedValues).length) {
+      savedValues.forEach(e =>  {
+        valuesArray.push(e);
+      });
     }
+    else {
+      console.log('Error loading items from storage! Is storage empt');
+      return;
+    }
+    
+
+    ItemsObj.ServerItemsMap.set(key, valuesArray);
     
   }
   
   //delete all storage content!
-  async function WipeStorage(Items) {
+  async function WipeStorage(StorageKey, Items) {
     
-    Items.ItemsToChooseFrom = [];
-  
-    await storage.clear();
+    Items.ServerItemsMap.set(StorageKey, new Array());
+    
+    await storage.setItem(StorageKey, new Array());
+
+    // await storage.clear();
   
     console.log('storage wiped.')
   }

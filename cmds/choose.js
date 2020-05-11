@@ -5,14 +5,15 @@ module.exports = {
 
     name: 'choose',
     
-    execute(msg, Items) {
+    execute(msg, Items, StorageKey) {
+        const items = Items.ServerItemsMap.get(StorageKey);
 
-        if(Items.ItemsToChooseFrom.length==0) {
+        if(!items || items.length==0) {
             msg.reply('List is empty. Try @ChooseForMe help');
             return;
         }
 
-        const picked = Items.ItemsToChooseFrom[Math.floor(Math.random() * Items.ItemsToChooseFrom.length)];
+        const picked = items[Math.floor(Math.random() * items.length)];
       
         console.log("Picked " + picked);
   
